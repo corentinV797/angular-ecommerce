@@ -11,6 +11,7 @@ import { ProductService } from 'src/app/services/product.service';
 export class ProductListComponent implements OnInit {
 
   products: Product[] = [];
+  currentCategoryId: number = 0;
 
   constructor(private productService: ProductService,
               private route: ActivatedRoute) { }
@@ -22,7 +23,15 @@ export class ProductListComponent implements OnInit {
   }
 
   listProducts() {
-    this.productService.getProductList().subscribe(
+    const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
+
+    if(hasCategoryId) {
+      this.currentCategoryId = +this.route.snapshot.paramMap.get('id')!;
+    } else {
+      this.currentCategoryId = 1;
+    }
+
+    this.productService.getProductList(this.currentCategoryId).subscribe(
       data => {
         this.products = data;
       }
